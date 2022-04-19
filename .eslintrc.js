@@ -5,21 +5,28 @@ module.exports = {
 
   env: {
     browser: true,
-    node: true,
-    es2020: true,
+    es2021: true,
+    'vue/setup-compiler-macros': true,
   },
 
-  extends: ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/prettier'],
+  extends: [
+    'plugin:vue/vue3-essential',
+    'eslint:recommended',
+    '@vue/eslint-config-prettier',
+    '@vue/eslint-config-typescript/recommended',
+  ],
 
   parserOptions: {
     parser: '@typescript-eslint/parser',
     ecmaFeatures: { jsx: true },
-    ecmaVersion: 2020,
+    ecmaVersion: 2021,
   },
 
   rules: {
     // Basic
     'no-unused-vars': 'off', // For task start code
+    '@typescript-eslint/no-unused-vars': 'off', // For task start code
+    '@typescript-eslint/no-empty-function': 'off', // For task start code
     'no-console': 'warn',
     'no-debugger': 'warn',
     'no-var': 'error',
@@ -52,6 +59,13 @@ module.exports = {
       files: ['**/__tests__/*.js?(x)'],
       env: {
         jest: true,
+        node: true,
+      },
+    },
+    {
+      files: ['./*.js', 'utility_modules/*.js'],
+      env: {
+        node: true,
       },
     },
   ],

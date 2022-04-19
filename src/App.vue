@@ -1,36 +1,38 @@
 <template>
   <div class="wrapper bg-grey">
     <main class="main container">
-      <h1 style="margin: 1rem 0">Задачи c @Vue/CLI</h1>
+      <h1 style="margin: 1rem 0">Задачник курса по Vue 3</h1>
       <nav style="font-size: 20px">
-        <div v-for="(tasks, module) in taskTree" :key="module">
-          <p>
-            <span class="agenda__dot" />
-            <b>{{ module }}</b>
-          </p>
-          <ul style="list-style-type: circle; margin-left: 2rem; color: var(--blue)">
-            <li v-for="unit in tasks" :key="unit.task">
-              <a :href="`/${unit.module}/${unit.task}`" class="link">{{ unit.task }}</a>
-            </li>
-          </ul>
-        </div>
+        <ul style="list-style: none">
+          <li v-for="(tasks, module) in taskTree" :key="module">
+            <strong>{{ module }}</strong>
+            <ul style="list-style-type: circle; margin-left: 2rem; color: var(--blue)">
+              <li v-for="unit in tasks" :key="unit.task">
+                <a :href="`/${unit.path}/`" class="link">{{ unit.task }}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </nav>
     </main>
   </div>
 </template>
 
 <script>
+/** @type {Array<Object>} */
+const tasks = import.meta.env.TASKBOOK_TASKS;
+
 export default {
-  computed: {
-    taskTree() {
-      return process.env.TASKBOOK_TASKS.reduce((result, unit) => {
+  setup() {
+    return {
+      taskTree: tasks.reduce((result, unit) => {
         if (!result[unit.module]) {
           result[unit.module] = [];
         }
         result[unit.module].push(unit);
         return result;
-      }, {});
-    },
+      }, {}),
+    };
   },
 };
 </script>

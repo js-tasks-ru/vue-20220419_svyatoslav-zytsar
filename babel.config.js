@@ -1,4 +1,12 @@
 module.exports = {
-  presets: ['@vue/cli-plugin-babel/preset'],
-  plugins: ['@vue/babel-plugin-jsx'],
+  presets: [
+    [
+      '@vue/babel-preset-app',
+      {
+        targets: {
+          node: 'current',
+        },
+      },
+    ],
+  ],
 };

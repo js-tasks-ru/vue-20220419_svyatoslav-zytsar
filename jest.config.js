@@ -1,21 +1,25 @@
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 const config = {
   modulePaths: ['utility_modules'],
 
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'vue'],
 
   transform: {
-    // process *.vue files with vue-jest
+    // Support Vue SFC
     '^.+\\.vue$': require.resolve('vue-jest'),
-    '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': require.resolve('jest-transform-stub'),
+    // Use babel for ES modules support in Jest and JSX
     '^.+\\.jsx?$': require.resolve('babel-jest'),
     '^.+\\.tsx?$': require.resolve('ts-jest'),
+    // Ignore assets
+    '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': require.resolve('jest-transform-stub'),
   },
+  // Dependencies are usually in CommonJS modules
   transformIgnorePatterns: ['/node_modules/'],
 
   moduleNameMapper: {
     // Support the same @ -> src alias mapping in source code
     '^@/(.*)$': '<rootDir>/src/$1',
-    // Use commonjs version of lodash in tests
+    // Use commonjs version of lodash in tests (migration from previous @vue/cli taskbook...)
     '^lodash-es$': 'lodash',
   },
 
@@ -30,7 +34,7 @@ const config = {
   testMatch: ['**/[0-9][0-9]*/[0-9][0-9]*/**/__tests__/**/*.(spec|test|student-test).[jt]s?(x)'],
   // https://github.com/facebook/jest/issues/6766
   testURL: 'http://localhost/',
-  // watchPlugins: [require.resolve('jest-watch-typeahead/filename'), require.resolve('jest-watch-typeahead/testname')],
+  watchPlugins: [require.resolve('jest-watch-typeahead/filename'), require.resolve('jest-watch-typeahead/testname')],
 
   globals: {
     'ts-jest': {
@@ -41,6 +45,7 @@ const config = {
   clearMocks: true,
 };
 
+// Legacy config for Taskbook Monitor Generator
 if (process.env.TASK_MONITOR) {
   Object.assign(config, {
     testResultsProcessor: '<rootDir>/utility_modules/taskbook-test-results-processor.js',
