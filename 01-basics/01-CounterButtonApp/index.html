@@ -6,7 +6,12 @@
   </head>
   <body>
     <div id="app">
-      <button type="button">0</button>
+      <button
+        type="button"
+        @click="onClick"
+      >
+        {{ counter }}
+      </button>
     </div>
 
     <script type="module" src="script.js"></script>
