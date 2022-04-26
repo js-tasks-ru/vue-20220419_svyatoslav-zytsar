@@ -62,13 +62,15 @@ module.exports = defineConfig({
   plugins: [vue(), vueJsx()],
 
   resolve: {
-    alias: {
-      // Alias helps both @vue/cli migration and Taskbook dev
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      // Migration from @vue/cli Taskbook in styles import
-      '~@': fileURLToPath(new URL('./src', import.meta.url)),
-    },
-    // Add Vue extension for easy migration from @vue/cli Taskbook
+    alias: [
+      // Migration from @vue/cli Taskbook: support for ~@ alias in css
+      { find: '~@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+      // Migration from @vue/cli Taskbook: support for @ alias
+      { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+      // Migration from @vue/cli Taskbook: support public assets and icons
+      { find: /^\/(assets|icons)\/(.*)/, replacement: '/src/$1/$2' },
+    ],
+    // Migration from @vue/cli Taskbook: add .vue extension resolve
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
 
