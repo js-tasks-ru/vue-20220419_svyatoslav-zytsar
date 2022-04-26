@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VueCalculator</title>
+    <link rel="stylesheet" href="/assets/styles/index.css" />
+    <style>
+      @font-face {
+        font-family: emoji;
+        src: local('Apple Color Emoji'), local('Android Emoji'), local('Segoe UI Emoji'), local(EmojiSymbols),
+          local(Symbola);
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .col {
+        padding: 0.5rem;
+      }
+
+      input[type='number'] {
+        width: 48px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app" class="container">
+      <div class="row">
+        <div class="col">
+          <input type="number" v-model="operands[0]" />
+        </div>
+
+        <div class="col" style="display: flex; flex-direction: column; font-family: emoji">
+          <label v-for="operation in operations">
+            <input type="radio" name="opeator" v-model="operator" :value="operation.operator" />
+            {{ operation.text }}
+          </label>
+        </div>
+
+        <div class="col">
+          <input type="number" v-model="operands[1]" />
+        </div>
+
+        <div class="col">=</div>
+
+        <output class="col">{{ result }}</output>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
