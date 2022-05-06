@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/assets/styles/index.css" />
+    <link rel="stylesheet" href="/assets/styles/taskbook.css" />
+    <title>MeetupCover</title>
+    <style>
+      .my {
+        margin: 2rem 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="sample">
+      <h1 class="my">С изображением</h1>
+      <meetup-cover :title="meetupWithImage.title" :image="meetupWithImage.image"></meetup-cover>
+
+      <hr class="my" />
+
+      <h1 class="my">Без изображения</h1>
+      <meetup-cover :title="meetupWithoutImage.title" :image="meetupWithoutImage.image"></meetup-cover>
+    </div>
+
+    <script type="module">
+      import { createApp } from './vendor/vue.esm-browser.js';
+      import MeetupCover from './MeetupCover.js';
+
+      createApp({
+        components: {
+          MeetupCover,
+        },
+
+        data() {
+          return {
+            meetupWithImage: {
+              title: 'VueConf US',
+              image: 'https://course-vue.javascript.ru/api/images/5',
+            },
+            meetupWithoutImage: {
+              title: 'Demo meetup',
+              image: null,
+            },
+          };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>
