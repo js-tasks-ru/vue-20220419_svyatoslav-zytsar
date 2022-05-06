@@ -16,6 +16,6 @@ export default defineComponent({
 
   template: `
     <div class="meetup-cover" :style="computedStyles">
-        <h1 class="meetup-cover__title">Title</h1>
+        <h1 class="meetup-cover__title">{{ title }}</h1>
     </div>`,
 });
