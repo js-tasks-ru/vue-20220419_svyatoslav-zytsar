@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/assets/styles/index.css" />
+    <link rel="stylesheet" href="/assets/styles/taskbook.css" />
+    <title>PageMeetup</title>
+  </head>
+  <body>
+    <div id="app" class="sample">
+      <div class="container">
+        <p>
+          <select v-model="meetupId">
+            <option v-for="i in 10" :key="i" :value="i">{{ i }}</option>
+          </select>
+        </p>
+      </div>
+
+      <page-meetup :meetup-id="meetupId"></page-meetup>
+    </div>
+
+    <script type="module">
+      import { createApp } from './vendor/vue.esm-browser.js';
+      import PageMeetup from './PageMeetup.js';
+
+      createApp({
+        components: { PageMeetup },
+        data() {
+          return {
+            meetupId: 1,
+          };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>
