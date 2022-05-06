@@ -10,6 +10,8 @@ export default defineComponent({
 
   computed: {
     computedStyles() {
+      if (!this.image) return;
+
       return [`--bg-url: url('${this.image}')`];
     },
   },
