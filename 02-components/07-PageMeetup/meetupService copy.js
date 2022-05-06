@@ -1,23 +1,3 @@
-import meetups from './api/meetups.js';
-
-/**
- * Получение данных митапа по Meetup ID с API
- * @param {Number} meetupId
- * @return {Promise<Object>} - Данные митапа
- * @throws {Error} - Ошибка получения данных митапа
- */
-export async function fetchMeetupById(meetupId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const meetup = meetups.find((meetup) => meetup.id === meetupId);
-      if (!meetup) {
-        reject(new Error('Not found'));
-      }
-      resolve(meetup);
-    }, 500);
-  });
-}
-
 export const agendaTypes = {
   REGISTRATION: 'registration',
   OPENING: 'opening',
