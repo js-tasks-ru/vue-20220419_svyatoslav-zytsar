@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/assets/styles/index.css" />
+    <link rel="stylesheet" href="/assets/styles/taskbook.css" />
+    <title>MeetupInfo</title>
+  </head>
+  <body>
+    <div id="app" class="sample container">
+      <p>
+        <select v-model="selectedMeetup">
+          <option v-for="(meetup, index) in meetups" :key="meetup.id" :value="index">
+            {{ index }}: {{ meetup.title }}
+          </option>
+        </select>
+      </p>
+
+      <meetup-info
+        :organizer="meetups[selectedMeetup].organizer"
+        :place="meetups[selectedMeetup].place"
+        :date="meetups[selectedMeetup].date"
+      ></meetup-info>
+    </div>
+
+    <script type="module">
+      import { createApp } from './vendor/vue.esm-browser.js';
+      import MeetupInfo from './MeetupInfo.js';
+      import meetups from './api/meetups.js';
+
+      createApp({
+        components: {
+          MeetupInfo,
+        },
+
+        data() {
+          return {
+            meetups,
+            selectedMeetup: 0,
+          };
+        },
+      }).mount('#app');
+    </script>
+  </body>
+</html>
