@@ -25,6 +25,17 @@ export default defineComponent({
     },
   },
 
+  computed: {
+    meetupInfoProps() {
+      const { organizer, place, date } = this.meetup;
+      return {
+        organizer,
+        place,
+        date,
+      };
+    },
+  },
+
   template: `
     <div>
       <meetup-cover
@@ -46,7 +57,7 @@ export default defineComponent({
             <ui-alert v-else>Программа пока пуста...</ui-alert>
           </div>
           <div class="meetup__aside">
-            <meetup-info v-bind="meetup" />
+            <meetup-info v-bind="meetupInfoProps" />
           </div>
         </div>
       </ui-container>
