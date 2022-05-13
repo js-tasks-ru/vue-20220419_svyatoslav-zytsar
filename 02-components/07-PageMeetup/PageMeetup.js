@@ -20,7 +20,7 @@ export default defineComponent({
   data() {
     return {
       isLoading: false,
-      meetup: {},
+      meetup: null,
       errMsg: '',
     };
   },
