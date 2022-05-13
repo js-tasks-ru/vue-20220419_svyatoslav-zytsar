@@ -8,33 +8,16 @@
   </head>
   <body>
     <div id="app" class="sample container">
-      <h2>MeetupAgendaItem</h2>
-      <h3>Регистрация</h3>
-      <div>
-        <meetup-agenda-item :agenda-item="agenda[0]"></meetup-agenda-item>
-      </div>
-      <h3>Открытие (нестандартный заголовок)</h3>
-      <div>
-        <meetup-agenda-item :agenda-item="agenda[1]"></meetup-agenda-item>
-      </div>
-      <h3>Доклад</h3>
-      <div>
-        <meetup-agenda-item :agenda-item="agenda[2]"></meetup-agenda-item>
-      </div>
-
-      <h2>MeetupAgenda</h2>
-      <meetup-agenda :agenda="agenda"></meetup-agenda>
+      <meetup-agenda :agenda="agenda" />
     </div>
 
     <script type="module">
       import { createApp } from './vendor/vue.esm-browser.js';
       import MeetupAgenda from './MeetupAgenda.js';
-      import MeetupAgendaItem from './MeetupAgendaItem.js';
 
       createApp({
         components: {
           MeetupAgenda,
-          MeetupAgendaItem,
         },
 
         data() {
