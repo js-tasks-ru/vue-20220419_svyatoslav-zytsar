@@ -1,20 +1,28 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div :class="classes">
+    <button type="button" :class="buttonClasses" @click="toggleMenu">
+      <ui-icon v-if="selectedOptionIcon" :icon="selectedOptionIcon" class="dropdown__icon" />
+      <span>{{ computedTitle }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="isOpened" class="dropdown__menu" role="listbox">
+      <button
+        v-for="option in options"
+        :key="option.value"
+        class="dropdown__item"
+        :class="{ dropdown__item_icon: hasSomeOptionIcon }"
+        role="option"
+        type="button"
+        @click="onSelect(option.value)"
+      >
+        <ui-icon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
+
+    <select v-model="selfModel" style="display: none;">
+      <option v-for="option in options" :key="option.value" :value="option.value">{{ option.text }}</option>
+    </select>
   </div>
 </template>
 
@@ -23,8 +31,72 @@ import UiIcon from './UiIcon';
 
 export default {
   name: 'UiDropdown',
-
   components: { UiIcon },
+  props: {
+    options: {
+      type: Array,
+      default: () => [],
+      required: true,
+    },
+    modelValue: {
+      type: String,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['update:modelValue'],
+  data() {
+    return {
+      isOpened: false,
+      selfModel: this.modelValue,
+    };
+  },
+  computed: {
+    classes() {
+      return ['dropdown', { dropdown_opened: this.isOpened }];
+    },
+    selectedOption() {
+      return this.options.find((o) => o.value === this.modelValue);
+    },
+    computedTitle() {
+      return this.selectedOption ? this.selectedOption.text : this.title;
+    },
+    selectedOptionIcon() {
+      if (!this.selectedOption) return null;
+
+      return this.selectedOption.icon;
+    },
+    hasSomeOptionIcon() {
+      return this.options.some((o) => o.icon);
+    },
+    buttonClasses() {
+      return [
+        'dropdown__toggle',
+        { dropdown__toggle_icon: this.hasSomeOptionIcon },
+        { dropdown__item_icon: this.options.every((o) => o.icon) },
+      ];
+    },
+  },
+  watch: {
+    modelValue() {
+      this.selfModel = this.modelValue;
+    },
+    selfModel() {
+      this.$emit('update:modelValue', this.selfModel);
+    },
+  },
+  methods: {
+    toggleMenu() {
+      this.isOpened = !this.isOpened;
+    },
+    onSelect(value) {
+      this.isOpened = false;
+
+      this.$emit('update:modelValue', value);
+    },
+  },
 };
 </script>
 
