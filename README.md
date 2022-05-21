@@ -72,11 +72,11 @@ npm run format
   - [luxon](https://moment.github.io/luxon/)
   - [moment](https://momentjs.com) (не рекомендуется, [deprecated](https://momentjs.com/docs/#/-project-status/))
 - Прочее
-  - [lodash](https://lodash.com) - классический набор утилит, но лучше
+  - [lodash + lodash-es](https://lodash.com) - классический набор утилит, но лучше
     [не злоупотреблять](https://youmightnotneed.com/lodash/)
   - [klona](https://github.com/lukeed/klona) - маленькая быстрая библиотека для глубокого клонирования объектов
   - [dequal](https://github.com/lukeed/dequal) - маленькая быстрая библиотека для глубокого сравнения объектов
-  - [@tweenjs/tween.js](https://www.npmjs.com/package/@tweenjs/tween.js) - утилиты для плавного изменения значений
+  - [ola](https://github.com/franciscop/ola) - библиотека интерполяции значений
   - [nanoid](https://github.com/ai/nanoid) - простой лёгкий и быстрый генератор случайных ID (обычно достаточно
     инкремента)
   - [uuid](https://github.com/uuidjs/uuid) - генератор UUID (обычно достаточно инкремента)
