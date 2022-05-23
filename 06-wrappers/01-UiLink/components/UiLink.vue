@@ -1,10 +1,17 @@
 <template>
-  <a class="link">Link!</a>
+  <component :is="tag" class="link"><slot /></component>
 </template>
 
 <script>
 export default {
   name: 'UiLink',
+  props: {
+    tag: {
+      type: String,
+      default: 'router-link',
+      validator: (v) => ['a', 'router-link'].includes(v),
+    },
+  },
 };
 </script>
 

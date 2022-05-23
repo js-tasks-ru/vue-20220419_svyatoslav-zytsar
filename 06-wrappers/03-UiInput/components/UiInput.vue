@@ -1,13 +1,13 @@
 <template>
-  <div class="input-group input-group_icon input-group_icon-left input-group_icon-right">
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+  <div :class="classes">
+    <div v-if="hasSlot('left-icon')" class="input-group__icon">
+      <slot name="left-icon" />
     </div>
 
-    <input ref="input" class="form-control form-control_rounded form-control_sm" />
+    <component :is="tag" ref="input" v-bind="computedAttrs" />
 
-    <div class="input-group__icon">
-      <img class="icon" alt="icon" />
+    <div v-if="hasSlot('right-icon')" class="input-group__icon">
+      <slot name="right-icon" />
     </div>
   </div>
 </template>
@@ -15,6 +15,55 @@
 <script>
 export default {
   name: 'UiInput',
+  inheritAttrs: false,
+  props: {
+    modelValue: {
+      type: String,
+      default: '',
+    },
+    modelModifiers: {
+      default: () => ({}),
+    },
+    small: Boolean,
+    rounded: Boolean,
+    multiline: Boolean,
+  },
+  emits: ['update:modelValue'],
+  computed: {
+    classes() {
+      return [
+        'input-group',
+        { 'input-group_icon': this.hasSlot('left-icon') || this.hasSlot('right-icon') },
+        { 'input-group_icon-left': this.hasSlot('left-icon') },
+        { 'input-group_icon-right': this.hasSlot('right-icon') },
+      ];
+    },
+    inputClasses() {
+      return ['form-control', { 'form-control_rounded': this.rounded }, { 'form-control_sm': this.small }];
+    },
+    tag() {
+      return this.multiline ? 'textarea' : 'input';
+    },
+    computedAttrs() {
+      const eventName = this.modelModifiers.lazy ? 'onChange' : 'onInput';
+      const listeners = { [eventName]: (e) => this.$emit('update:modelValue', e.target.value) };
+
+      return {
+        ...this.$attrs,
+        value: this.modelValue,
+        class: this.inputClasses,
+        ...listeners,
+      };
+    },
+  },
+  methods: {
+    focus() {
+      this.$refs.input.focus();
+    },
+    hasSlot(name = 'default') {
+      return !!this.$slots[name];
+    },
+  },
 };
 </script>
 

@@ -1,10 +1,36 @@
 <template>
-  <button class="button button_secondary button_block">BUTTON</button>
+  <component :is="tag" :type="computedType" :class="classes"><slot /></component>
 </template>
 
 <script>
 export default {
   name: 'UiButton',
+  props: {
+    tag: {
+      type: [String, Object],
+      default: 'button',
+    },
+    variant: {
+      type: String,
+      default: 'secondary',
+      validator: (v) => ['primary', 'secondary', 'danger'].includes(v),
+    },
+    type: {
+      type: String,
+      default: 'button',
+    },
+    block: Boolean,
+  },
+  computed: {
+    classes() {
+      return ['button', `button_${this.variant}`, { button_block: this.block }];
+    },
+    computedType() {
+      if (this.tag === 'button') return this.type;
+
+      return null;
+    },
+  },
 };
 </script>
 
