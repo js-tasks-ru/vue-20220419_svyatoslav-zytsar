@@ -1,8 +1,20 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': isLoading }"
+      :style="computedStyles"
+      @click="onClick"
+    >
+      <span class="image-uploader__text">{{ computedText }}</span>
+      <input
+        ref="input"
+        v-bind="$attrs"
+        type="file"
+        accept="image/*"
+        class="image-uploader__input"
+        @change="onChangeFile"
+      />
     </label>
   </div>
 </template>
@@ -10,6 +22,75 @@
 <script>
 export default {
   name: 'UiImageUploader',
+  inheritAttrs: false,
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+  emits: ['select', 'upload', 'error', 'remove'],
+  data() {
+    return {
+      isLoading: false,
+      selfPreview: this.preview,
+    };
+  },
+  computed: {
+    computedStyles() {
+      if (this.selfPreview) {
+        return {
+          '--bg-url': `url(${this.selfPreview})`,
+        };
+      }
+
+      return null;
+    },
+    computedText() {
+      if (this.selfPreview) return 'Удалить изображение';
+
+      if (this.isLoading) return 'Загрузка...';
+
+      return 'Загрузить изображение';
+    },
+  },
+  watch: {
+    preview(value) {
+      this.selfPreview = value;
+    },
+  },
+  methods: {
+    onClick(e) {
+      if (this.selfPreview) {
+        this.selfPreview = null;
+
+        this.$emit('remove');
+
+        e.preventDefault();
+      }
+    },
+    async onChangeFile(e) {
+      try {
+        const [file] = e.target.files;
+
+        this.$emit('select', file);
+
+        if (this.uploader) {
+          this.isLoading = true;
+
+          const response = await this.uploader(file);
+
+          this.$emit('upload', response);
+        } else {
+          this.selfPreview = URL.createObjectURL(file);
+        }
+      } catch (e) {
+        this.$emit('error', e);
+      } finally {
+        this.isLoading = false;
+
+        this.$refs.input.value = '';
+      }
+    },
+  },
 };
 </script>
 
