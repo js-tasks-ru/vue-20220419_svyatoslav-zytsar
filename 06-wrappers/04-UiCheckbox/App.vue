@@ -3,9 +3,9 @@
     <p>
       <ui-checkbox v-model="checked"> Checked ({{ checked }})</ui-checkbox>
     </p>
-    <p><ui-checkbox v-model="checkedArray" value="A">Check A</ui-checkbox></p>
-    <p><ui-checkbox v-model="checkedArray" value="B">Check B</ui-checkbox></p>
-    <p><ui-checkbox v-model="checkedArray" value="C">Check C</ui-checkbox></p>
+    <p><ui-checkbox v-model="checkedArray" name="checkboxes" value="A">Check A</ui-checkbox></p>
+    <p><ui-checkbox v-model="checkedArray" name="checkboxes" value="B">Check B</ui-checkbox></p>
+    <p><ui-checkbox v-model="checkedArray" name="checkboxes" value="C">Check C</ui-checkbox></p>
     <p>Checked: {{ checkedArray }}</p>
     <p>
       <button @click="checked = !checked">Update Bool</button>
