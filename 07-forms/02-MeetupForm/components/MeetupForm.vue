@@ -1,18 +1,18 @@
 <template>
-  <form class="meetup-form">
+  <form class="meetup-form" @submit.prevent="onSubmit">
     <div class="meetup-form__content">
       <fieldset class="meetup-form__section">
         <ui-form-group label="Название">
-          <ui-input name="title" />
+          <ui-input v-model="selfModel.title" name="title" />
         </ui-form-group>
         <ui-form-group label="Дата">
-          <ui-input-date type="date" name="date" />
+          <ui-input-date v-model="selfModel.date" type="date" name="date" />
         </ui-form-group>
         <ui-form-group label="Место">
-          <ui-input name="place" />
+          <ui-input v-model="selfModel.place" name="place" />
         </ui-form-group>
         <ui-form-group label="Описание">
-          <ui-input multiline rows="3" name="description" />
+          <ui-input v-model="selfModel.description" multiline rows="3" name="description" />
         </ui-form-group>
         <ui-form-group label="Изображение">
           <!--
@@ -22,23 +22,25 @@
           <ui-image-uploader
             name="image"
             :preview="meetup.image"
-            @select="meetup.imageToUpload = $event"
-            @remove="meetup.imageToUpload = null"
+            @select="selfModel.imageToUpload = $event"
+            @remove="selfModel.imageToUpload = null"
           />
         </ui-form-group>
       </fieldset>
 
       <h3 class="meetup-form__agenda-title">Программа</h3>
-      <!--
+
       <meetup-agenda-item-form
-         :key="agendaItem.id"
-         :agenda-item="..."
-         class="meetup-form__agenda-item"
-       />
-       -->
+        v-for="(agendaItem, idx) in selfModel.agenda"
+        :key="agendaItem.id"
+        :agenda-item="agendaItem"
+        class="meetup-form__agenda-item"
+        @update:agendaItem="onUpdateAgendaItem(idx, $event)"
+        @remove="onRemoveAgendaItem(idx)"
+      />
 
       <div class="meetup-form__append">
-        <button class="meetup-form__append-button" type="button" data-test="addAgendaItem">
+        <button class="meetup-form__append-button" type="button" data-test="addAgendaItem" @click="onAddAgenda">
           + Добавить этап программы
         </button>
       </div>
@@ -47,9 +49,11 @@
     <div class="meetup-form__aside">
       <div class="meetup-form__aside-stick">
         <!-- data-test атрибуты используются для поиска нужного элемента в тестах, не удаляйте их -->
-        <ui-button variant="secondary" block class="meetup-form__aside-button" data-test="cancel">Отмена</ui-button>
+        <ui-button variant="secondary" block class="meetup-form__aside-button" data-test="cancel" @click="onCancel"
+          >Отмена</ui-button
+        >
         <ui-button variant="primary" block class="meetup-form__aside-button" data-test="submit" type="submit">
-          SUBMIT
+          {{ submitText }}
         </ui-button>
       </div>
     </div>
@@ -57,7 +61,7 @@
 </template>
 
 <script>
-// import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 import MeetupAgendaItemForm from './MeetupAgendaItemForm';
 import UiButton from './UiButton';
@@ -65,11 +69,10 @@ import UiFormGroup from './UiFormGroup';
 import UiImageUploader from './UiImageUploader';
 import UiInput from './UiInput';
 import UiInputDate from './UiInputDate';
-// import { createAgendaItem } from '../meetupService';
+import { createAgendaItem } from '../meetupService';
 
 export default {
   name: 'MeetupForm',
-
   components: {
     MeetupAgendaItemForm,
     UiButton,
@@ -78,16 +81,40 @@ export default {
     UiInput,
     UiInputDate,
   },
-
   props: {
     meetup: {
       type: Object,
       required: true,
     },
-
     submitText: {
       type: String,
       default: '',
+    },
+  },
+  emits: ['cancel', 'submit'],
+  data() {
+    return {
+      selfModel: cloneDeep(this.meetup),
+    };
+  },
+  methods: {
+    onCancel() {
+      this.$emit('cancel');
+    },
+    onSubmit() {
+      this.$emit('submit', cloneDeep(this.selfModel));
+    },
+    onAddAgenda() {
+      const [lastAgenda] = this.selfModel.agenda.slice(this.selfModel.agenda.length - 1);
+      const lastAgendaEndTime = lastAgenda ? lastAgenda.endsAt : undefined;
+
+      this.selfModel.agenda.push(createAgendaItem(lastAgendaEndTime));
+    },
+    onUpdateAgendaItem(idx, value) {
+      this.selfModel.agenda.splice(idx, 1, value);
+    },
+    onRemoveAgendaItem(idx) {
+      this.selfModel.agenda.splice(idx, 1);
     },
   },
 };
