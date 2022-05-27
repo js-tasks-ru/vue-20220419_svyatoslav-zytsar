@@ -1,32 +1,31 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="$emit('remove')">
       <ui-icon icon="trash" />
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown v-model="selfModel.type" title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="selfModel.startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="selfModel.endsAt" type="time" placeholder="00:00" name="endsAt" @change="getTimeDiff" />
         </ui-form-group>
       </div>
     </div>
 
-    <ui-form-group label="Заголовок">
-      <ui-input name="title" />
-    </ui-form-group>
-    <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
-    </ui-form-group>
+    <template v-for="(item, key) in schema" :key="key">
+      <ui-form-group :label="item.label">
+        <component :is="item.component" v-bind="item.props" v-model="selfModel[key]" />
+      </ui-form-group>
+    </template>
   </fieldset>
 </template>
 
@@ -69,6 +68,8 @@ const talkLanguageOptions = [
   { value: 'RU', text: 'RU' },
   { value: 'EN', text: 'EN' },
 ];
+
+const HOURS = 24;
 
 /**
  * @typedef FormItemSchema
@@ -153,16 +154,63 @@ const agendaItemFormSchemas = {
 
 export default {
   name: 'MeetupAgendaItemForm',
-
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
-
   agendaItemTypeOptions,
   agendaItemFormSchemas,
-
   props: {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+  emits: ['remove', 'update:agendaItem'],
+  data() {
+    return {
+      selfModel: { ...this.agendaItem },
+      diff: 0,
+    };
+  },
+  computed: {
+    schema() {
+      return this.$options.agendaItemFormSchemas[this.selfModel.type];
+    },
+    startsAt() {
+      return this.selfModel.startsAt;
+    },
+    endsAt() {
+      return this.selfModel.endsAt;
+    },
+    startsHour() {
+      return this.startsAt.substring(0, 2);
+    },
+    endsHour() {
+      return this.endsAt.substring(0, 2);
+    },
+    startMinutes() {
+      return this.startsAt.substring(3, 5);
+    },
+  },
+  watch: {
+    selfModel: {
+      deep: true,
+      handler() {
+        this.$emit('update:agendaItem', { ...this.selfModel });
+      },
+    },
+    startsAt() {
+      const hour = (parseInt(this.startsHour, 10) + this.diff) % HOURS;
+      this.selfModel.endsAt = `${String(hour).padStart(2, 0)}:${this.startMinutes}`;
+    },
+  },
+  created() {
+    this.getTimeDiff();
+  },
+  methods: {
+    getTimeDiff() {
+      const start = parseInt(this.startsHour, 10);
+      const end = parseInt(this.endsHour, 10);
+
+      this.diff = end - start;
     },
   },
 };
