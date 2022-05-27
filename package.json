@@ -1,6 +1,6 @@
 {
   "name": "tasks-vue-3",
-  "version": "5.0.2",
+  "version": "5.0.4",
   "private": true,
   "description": "Taskbook for Vue 3 Course on learn.javascript.ru",
   "author": "Grigorii K. Shartsev <g.shartsev@javascript.info>",
@@ -44,7 +44,7 @@
     "@vue/babel-preset-app": "^5.0.4",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^10.0.0",
-    "@vue/test-utils": "^2.0.0",
+    "@vue/test-utils": "^2.0.0-rc.20",
     "@vue/tsconfig": "^0.1.3",
     "core-js": "^3.21.1",
     "cross-env": "^7.0.3",
