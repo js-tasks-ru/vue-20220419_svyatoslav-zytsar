@@ -1,37 +1,37 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click="$emit('remove')">
       <ui-icon icon="trash" />
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown v-model="selfModel.type" title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="selfModel.startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="selfModel.endsAt" type="time" placeholder="00:00" name="endsAt" @change="getTimeDiff" />
         </ui-form-group>
       </div>
     </div>
 
-    <ui-form-group label="Тема">
-      <ui-input name="title" />
+    <ui-form-group :label="titleLabel">
+      <ui-input v-model="selfModel.title" name="title" />
     </ui-form-group>
-    <ui-form-group label="Докладчик">
-      <ui-input name="speaker" />
+    <ui-form-group v-if="isTalk" label="Докладчик">
+      <ui-input v-model="selfModel.speaker" name="speaker" />
     </ui-form-group>
-    <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
+    <ui-form-group v-if="isTalk || isOther" label="Описание">
+      <ui-input v-model="selfModel.description" multiline name="description" />
     </ui-form-group>
-    <ui-form-group label="Язык">
-      <ui-dropdown title="Язык" :options="$options.talkLanguageOptions" name="language" />
+    <ui-form-group v-if="isTalk" label="Язык">
+      <ui-dropdown v-model="selfModel.language" title="Язык" :options="$options.talkLanguageOptions" name="language" />
     </ui-form-group>
   </fieldset>
 </template>
@@ -76,18 +76,77 @@ const talkLanguageOptions = [
   { value: 'EN', text: 'EN' },
 ];
 
+const HOURS = 24;
+
 export default {
   name: 'MeetupAgendaItemForm',
-
   agendaItemTypeOptions,
   talkLanguageOptions,
-
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
-
   props: {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+  emits: ['remove', 'update:agendaItem'],
+  data() {
+    return {
+      selfModel: { ...this.agendaItem },
+      diff: 0,
+    };
+  },
+  computed: {
+    isTalk() {
+      return this.selfModel.type === 'talk';
+    },
+    isOther() {
+      return this.selfModel.type === 'other';
+    },
+    titleLabel() {
+      if (this.isTalk) return 'Тема';
+
+      if (this.isOther) return 'Заголовок';
+
+      return 'Нестандартный текст (необязательно)';
+    },
+    startsAt() {
+      return this.selfModel.startsAt;
+    },
+    endsAt() {
+      return this.selfModel.endsAt;
+    },
+    startsHour() {
+      return this.startsAt.substring(0, 2);
+    },
+    endsHour() {
+      return this.endsAt.substring(0, 2);
+    },
+    startMinutes() {
+      return this.startsAt.substring(3, 5);
+    },
+  },
+  watch: {
+    selfModel: {
+      deep: true,
+      handler() {
+        this.$emit('update:agendaItem', { ...this.selfModel });
+      },
+    },
+    startsAt() {
+      const hour = (parseInt(this.startsHour, 10) + this.diff) % HOURS;
+      this.selfModel.endsAt = `${String(hour).padStart(2, 0)}:${this.startMinutes}`;
+    },
+  },
+  created() {
+    this.getTimeDiff();
+  },
+  methods: {
+    getTimeDiff() {
+      const start = parseInt(this.startsHour, 10);
+      const end = parseInt(this.endsHour, 10);
+
+      this.diff = end - start;
     },
   },
 };
