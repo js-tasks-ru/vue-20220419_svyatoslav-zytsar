@@ -8,9 +8,12 @@ import { ref, watchEffect } from 'vue';
 export function refHistory(source) {
   const history = ref([]);
 
-  watchEffect(() => {
-    history.value.push(source.value);
-  });
+  watchEffect(
+    () => {
+      history.value.push(source.value);
+    },
+    { flush: 'sync' },
+  );
 
   return { history };
 }
