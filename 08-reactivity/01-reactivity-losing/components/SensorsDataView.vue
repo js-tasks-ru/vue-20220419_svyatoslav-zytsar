@@ -42,7 +42,7 @@ export default {
     },
 
     setData(sensors) {
-      this.sensors = sensors;
+      this.sensors = Object.values(sensors).map(({ ...v }) => v);
     },
   },
 };
