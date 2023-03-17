@@ -1,3 +1,16 @@
+const taskbookDevelopmentRules = {
+  // Vue / Priority C: Recommended
+  'vue/attributes-order': 'error',
+  'vue/order-in-components': 'error',
+  'vue/new-line-between-multi-line-property': 'error',
+  // Vue / Uncategorized
+  'vue/match-component-file-name': 'error',
+  'vue/no-duplicate-attr-inheritance': 'error',
+  'vue/no-useless-v-bind': 'error',
+  'vue/padding-line-between-blocks': 'error',
+  'vue/component-name-in-template-casing': ['error', 'PascalCase']
+};
+
 module.exports = {
   root: true,
 
@@ -49,16 +62,12 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'warn',
     'vue/no-template-shadow': 'warn',
     // Vue / Priority C: Recommended
-    'vue/attributes-order': process.env.TASK_DEV ? 'error' : 'warn',
-    'vue/order-in-components': process.env.TASK_DEV ? 'error' : 'warn',
-    'vue/new-line-between-multi-line-property': process.env.TASK_DEV ? 'error' : 'off',
     'vue/this-in-template': 'error',
     // Vue / Uncategorized
-    'vue/match-component-file-name': process.env.TASK_DEV ? 'error' : 'off',
     'vue/no-duplicate-attr-inheritance': 'error',
-    'vue/no-useless-v-bind': process.env.TASK_DEV ? 'error' : 'warn',
-    'vue/padding-line-between-blocks': process.env.TASK_DEV ? 'error' : 'warn',
     'vue/v-for-delimiter-style': 'error',
+
+    ...process.env.TASK_DEV ? taskbookDevelopmentRules : {},
   },
 
   overrides: [
