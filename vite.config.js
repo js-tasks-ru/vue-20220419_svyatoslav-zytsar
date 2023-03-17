@@ -1,10 +1,10 @@
-const fs = require('fs');
-const { join, resolve, extname } = require('path');
-const { fileURLToPath, URL, parse } = require('url');
+import fs from 'node:fs';
+import { extname, join, resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 
-const { defineConfig } = require('vite');
-const vue = require('@vitejs/plugin-vue');
-const vueJsx = require('@vitejs/plugin-vue-jsx');
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
 /**
  * @param {string} taskDir - Path to task directory in Taskbook, e.g. 0-module/1-task
@@ -72,7 +72,7 @@ function devServerMultiPageSpa() {
           return next();
         }
 
-        const pathname = parse(req.url).pathname;
+        const pathname = new URL(req.url, 'http://localhost').pathname;
 
         const isFile = !!extname(pathname);
         if (isFile) {
@@ -105,7 +105,7 @@ const taskbookDevSourceRewrite = (tasks) => {
     name: 'taskbook-dev-source-rewrite',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const pathname = parse(req.url).pathname;
+        const pathname = new URL(req.url, 'http://localhost').pathname;
         const task = tasks.find(({ module, task }) => pathname.startsWith(`/${module}/${task}/`));
         if (task) {
           const sourcePath = joinTaskSourceDir(task.path);
@@ -122,7 +122,7 @@ const taskbookDevSourceRewrite = (tasks) => {
 // All tasks for Taskbook's Index page
 const tasks = discoverTaskDirs(__dirname);
 
-module.exports = defineConfig({
+export default defineConfig({
   plugins: [devServerMultiPageSpa(), taskbookDevSourceRewrite(tasks), vue(), vueJsx()],
 
   resolve: {

@@ -30,7 +30,7 @@
   top: 15px;
   right: 16px;
   transform: none;
-  background: url('~@/assets/icons/icon-chevron-down.svg') no-repeat;
+  background: url('../icons/icon-chevron-down.svg') no-repeat;
   background-size: cover;
   display: block;
   width: 24px;
@@ -38,7 +38,7 @@
   transition: 0.2s transform;
 }
 
-.dropdown__toggle.dropdown__toggle_icon {
+.dropdown__toggle_icon {
   padding-left: 56px;
 }
 
@@ -95,12 +95,12 @@
   background-color: var(--grey-light);
 }
 
-.dropdown__item.dropdown__item_icon {
+.dropdown__item_icon {
   padding-left: 56px;
   position: relative;
 }
 
-.dropdown__item.dropdown__item_icon .dropdown__icon,
+.dropdown__item_icon .dropdown__icon,
 .dropdown__toggle_icon .dropdown__icon {
   position: absolute;
   top: 50%;

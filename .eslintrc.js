@@ -5,21 +5,28 @@ module.exports = {
 
   env: {
     browser: true,
-    es2021: true,
+    es2022: true,
     'vue/setup-compiler-macros': true,
   },
 
   extends: [
-    'plugin:vue/vue3-essential',
     'eslint:recommended',
-    '@vue/eslint-config-prettier',
-    '@vue/eslint-config-typescript/recommended',
+    'plugin:vue/vue3-essential',
+    'prettier',
+    'plugin:@typescript-eslint/eslint-recommended',
   ],
 
+  parser: 'vue-eslint-parser',
+
   parserOptions: {
-    parser: '@typescript-eslint/parser',
+    parser: {
+      js: 'espree',
+      jsx: 'espree',
+      ts: '@typescript-eslint/parser',
+      tsx: '@typescript-eslint/parser',
+    },
     ecmaFeatures: { jsx: true },
-    ecmaVersion: 2021,
+    ecmaVersion: 2022,
   },
 
   rules: {
@@ -27,7 +34,7 @@ module.exports = {
     'no-unused-vars': 'off', // For task start code
     '@typescript-eslint/no-unused-vars': 'off', // For task start code
     '@typescript-eslint/no-empty-function': 'off', // For task start code
-    'no-console': 'warn',
+    'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-debugger': 'warn',
     'no-var': 'error',
     // Vue / Priority A: Essential Essential
